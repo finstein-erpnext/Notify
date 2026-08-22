@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Notify Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Setup and reference documentation for Notify — desktop & mobile push notifications for Frappe / ERPNext.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#fcfcfd; --surface:#f5f6fa; --surface-2:#eceef5; --code-bg:#f3f4fa;
+  --ink:#14161d; --body:#3b4251; --muted:#6a7382; --hairline:#e5e8f0;
+  --accent:#4f46e5; --accent-ink:#4338ca; --accent-wash:#eef0fe;
+  --bell:#c2680a; --bell-wash:#fbf0df;
+  --good:#15803d; --good-wash:#e7f5ec; --warn:#b45309; --warn-wash:#fbf1e0;
+  --crit:#dc2626; --crit-wash:#fceceb;
+  --shadow:0 1px 2px rgba(20,28,46,.06), 0 10px 28px rgba(20,28,46,.06);
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sidebar-w:280px; --content-w:60rem;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --ground:#0e1016; --surface:#141822; --surface-2:#1c2230; --code-bg:#161b26;
+  --ink:#eef1f7; --body:#c4ccd8; --muted:#8a94a5; --hairline:#242c3a;
+  --accent:#8b93ff; --accent-ink:#aab2ff; --accent-wash:#1a1f33;
+  --bell:#e0a53a; --bell-wash:#271d10;
+  --good:#48b877; --good-wash:#12241a; --warn:#d99a3f; --warn-wash:#271d10;
+  --crit:#f0776d; --crit-wash:#2a1614;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 34px rgba(0,0,0,.4);
+}}
+:root[data-theme="dark"]{
+  --ground:#0e1016; --surface:#141822; --surface-2:#1c2230; --code-bg:#161b26;
+  --ink:#eef1f7; --body:#c4ccd8; --muted:#8a94a5; --hairline:#242c3a;
+  --accent:#8b93ff; --accent-ink:#aab2ff; --accent-wash:#1a1f33;
+  --bell:#e0a53a; --bell-wash:#271d10;
+  --good:#48b877; --good-wash:#12241a; --warn:#d99a3f; --warn-wash:#271d10;
+  --crit:#f0776d; --crit-wash:#2a1614;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 34px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:24px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--ground);color:var(--body);font-family:var(--sans);
+  font-size:15.5px;line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* ---------- shell ---------- */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);flex:0 0 var(--sidebar-w);position:sticky;top:0;height:100vh;
+  overflow-y:auto;background:var(--surface);border-right:1px solid var(--hairline);padding:22px 18px 40px}
+.main{flex:1;min-width:0;display:flex;justify-content:center}
+.content{width:100%;max-width:var(--content-w);padding:40px 40px 96px}
+
+/* ---------- brand ---------- */
+.brand{display:flex;align-items:center;gap:11px;margin:2px 6px 6px}
+.brand .mark{width:34px;height:34px;border-radius:9px;background:var(--bell-wash);
+  display:grid;place-items:center;font-size:18px;border:1px solid var(--hairline)}
+.brand .name{font-family:var(--serif);font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em}
+.brand .ver{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--surface-2);
+  padding:1px 7px;border-radius:20px;border:1px solid var(--hairline)}
+.tagline{color:var(--muted);font-size:12.5px;margin:0 6px 16px;line-height:1.5}
+
+/* ---------- nav ---------- */
+nav{display:flex;flex-direction:column;gap:2px}
+nav .group{font-family:var(--mono);text-transform:uppercase;letter-spacing:.09em;font-size:10.5px;
+  color:var(--muted);margin:16px 8px 6px;font-weight:500}
+nav a{display:block;padding:5px 10px;border-radius:7px;color:var(--body);font-size:13.6px;line-height:1.35}
+nav a:hover{background:var(--surface-2);text-decoration:none;color:var(--ink)}
+nav a.active{background:var(--accent-wash);color:var(--accent-ink);font-weight:600}
+
+/* ---------- topbar (mobile) ---------- */
+.topbar{display:none;position:sticky;top:0;z-index:30;align-items:center;gap:12px;
+  padding:11px 16px;background:color-mix(in srgb,var(--ground) 90%,transparent);
+  backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid var(--hairline)}
+.iconbtn{display:inline-grid;place-items:center;width:36px;height:34px;border-radius:8px;
+  border:1px solid var(--hairline);background:var(--surface);color:var(--ink);cursor:pointer;font-size:16px}
+.themebtn{margin:6px;width:calc(100% - 12px);justify-content:flex-start;gap:9px;display:flex;align-items:center;
+  padding:8px 12px;border-radius:8px;border:1px solid var(--hairline);background:var(--ground);
+  color:var(--body);cursor:pointer;font-family:var(--sans);font-size:13px}
+.themebtn:hover{background:var(--surface-2)}
+.scrim{display:none}
+
+/* ---------- hero ---------- */
+.hero{border:1px solid var(--hairline);border-radius:16px;background:
+   radial-gradient(120% 140% at 100% 0%, var(--accent-wash) 0%, transparent 55%), var(--surface);
+  padding:30px 30px 26px;margin-bottom:14px;box-shadow:var(--shadow)}
+.eyebrow{font-family:var(--mono);text-transform:uppercase;letter-spacing:.13em;font-size:11px;
+  color:var(--bell);font-weight:500;margin:0 0 10px}
+.hero h1{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:clamp(1.9rem,4vw,2.5rem);
+  line-height:1.1;margin:0 0 12px;letter-spacing:-.02em;text-wrap:balance}
+.hero p{margin:0;font-size:16.5px;color:var(--body);max-width:60ch}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.pill{font-size:12px;font-family:var(--mono);color:var(--muted);background:var(--ground);
+  border:1px solid var(--hairline);border-radius:20px;padding:3px 11px}
+
+/* ---------- typography ---------- */
+.content h2{font-size:1.55rem;color:var(--ink);letter-spacing:-.015em;margin:52px 0 6px;
+  padding-top:14px;font-weight:600;text-wrap:balance;scroll-margin-top:24px}
+.content h2:first-of-type{margin-top:34px}
+.content h3{font-size:1.14rem;color:var(--ink);margin:32px 0 4px;font-weight:600;scroll-margin-top:24px}
+.content h4{font-size:.97rem;color:var(--ink);margin:22px 0 2px;font-weight:600}
+.content p{margin:12px 0}
+.lead{font-size:1.05rem;color:var(--body)}
+.content ul,.content ol{margin:12px 0;padding-left:22px}
+.content li{margin:6px 0}
+.content li::marker{color:var(--muted)}
+hr.sep{border:none;border-top:1px solid var(--hairline);margin:8px 0 0}
+strong{color:var(--ink);font-weight:600}
+.section-note{color:var(--muted);font-size:14px;margin-top:2px}
+
+/* steps */
+ol.steps{counter-reset:step;list-style:none;padding:0;margin:16px 0;display:flex;flex-direction:column;gap:12px}
+ol.steps>li{counter-increment:step;position:relative;padding:2px 0 2px 44px;min-height:30px}
+ol.steps>li::before{content:counter(step);position:absolute;left:0;top:0;width:30px;height:30px;
+  border-radius:50%;background:var(--accent-wash);color:var(--accent-ink);font-family:var(--mono);
+  font-weight:500;font-size:13px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
+
+/* code */
+code{font-family:var(--mono);font-size:.86em;background:var(--surface-2);color:var(--ink);
+  padding:2px 6px;border-radius:5px;border:1px solid var(--hairline)}
+.codewrap{position:relative;margin:16px 0}
+pre{font-family:var(--mono);font-size:13px;line-height:1.6;background:var(--code-bg);color:var(--ink);
+  border:1px solid var(--hairline);border-radius:11px;padding:16px 18px;overflow-x:auto;margin:0}
+pre code{background:none;border:none;padding:0;font-size:13px;color:inherit}
+.copybtn{position:absolute;top:9px;right:9px;font-family:var(--mono);font-size:11px;color:var(--muted);
+  background:var(--ground);border:1px solid var(--hairline);border-radius:6px;padding:3px 9px;cursor:pointer;opacity:0;transition:opacity .15s}
+.codewrap:hover .copybtn{opacity:1}
+.copybtn:hover{color:var(--ink);border-color:var(--accent)}
+.tok-c{color:var(--muted)} /* comments */
+
+/* callouts */
+.callout{display:flex;gap:12px;border:1px solid var(--hairline);border-left-width:3px;border-radius:10px;
+  padding:13px 16px;margin:16px 0;background:var(--surface);font-size:14px}
+.callout .ic{flex:0 0 auto;font-size:15px;line-height:1.5}
+.callout p{margin:0}
+.callout.note{border-left-color:var(--accent);background:var(--accent-wash)}
+.callout.tip{border-left-color:var(--good);background:var(--good-wash)}
+.callout.warn{border-left-color:var(--warn);background:var(--warn-wash)}
+.callout.crit{border-left-color:var(--crit);background:var(--crit-wash)}
+.callout b{color:var(--ink)}
+
+/* tables */
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--hairline);border-radius:11px}
+table{border-collapse:collapse;width:100%;font-size:13.6px;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--hairline);vertical-align:top}
+th{background:var(--surface);color:var(--ink);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.badge{font-family:var(--mono);font-size:11px;padding:1px 7px;border-radius:5px;border:1px solid var(--hairline);white-space:nowrap}
+.badge.get{color:var(--good);background:var(--good-wash);border-color:color-mix(in srgb,var(--good) 30%,transparent)}
+.badge.post{color:var(--accent-ink);background:var(--accent-wash);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
+.badge.single{color:var(--bell);background:var(--bell-wash);border-color:color-mix(in srgb,var(--bell) 30%,transparent)}
+
+/* feature grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0}
+.card{border:1px solid var(--hairline);border-radius:12px;padding:18px;background:var(--surface)}
+.card .ic{font-size:20px}
+.card h4{margin:10px 0 4px}
+.card p{margin:0;font-size:13.6px;color:var(--muted)}
+
+/* flow diagram */
+.flow{border:1px solid var(--hairline);border-radius:12px;background:var(--surface);padding:22px;margin:18px 0;overflow-x:auto}
+.flow svg{display:block;margin:0 auto;max-width:100%;height:auto}
+
+/* footer */
+.docfoot{margin-top:64px;padding-top:22px;border-top:1px solid var(--hairline);color:var(--muted);font-size:13px}
+
+@media (max-width:960px){
+  .sidebar{position:fixed;z-index:50;left:0;top:0;transform:translateX(-100%);transition:transform .25s ease;box-shadow:var(--shadow)}
+  body.nav-open .sidebar{transform:translateX(0)}
+  body.nav-open .scrim{display:block;position:fixed;inset:0;z-index:45;background:rgba(0,0,0,.4)}
+  .topbar{display:flex}
+  .content{padding:24px 20px 80px}
+  .hero{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="iconbtn" id="menuBtn" aria-label="Open navigation">☰</button>
+  <div class="brand" style="margin:0"><span class="mark">🔔</span><span class="name">Notify</span></div>
+</div>
+<div class="scrim" id="scrim"></div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><span class="mark">🔔</span><span class="name">Notify</span><span class="ver">v1.0</span></div>
+    <p class="tagline">Desktop &amp; mobile push notifications for Frappe / ERPNext.</p>
+    <button class="themebtn" id="themeBtn"><span id="themeIc">◐</span><span id="themeLabel">Theme</span></button>
+    <nav id="nav">
+      <div class="group">Getting started</div>
+      <a href="#overview">Overview</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#prerequisites">Prerequisites</a>
+      <a href="#installation">Installation</a>
+      <div class="group">Setup</div>
+      <a href="#firebase">1 · Firebase project</a>
+      <a href="#settings">2 · Notify Settings</a>
+      <a href="#desktop">3 · Desktop push</a>
+      <a href="#mobile">4 · Mobile / ESS push</a>
+      <div class="group">Usage</div>
+      <a href="#everyday">Everyday use</a>
+      <a href="#rules">Notification Rules</a>
+      <a href="#devices">Managing devices</a>
+      <a href="#log">Delivery log</a>
+      <div class="group">Reference</div>
+      <a href="#doctypes">DocType reference</a>
+      <a href="#api">Whitelisted API</a>
+      <a href="#jsapi">Client JS API</a>
+      <a href="#architecture">Hooks &amp; architecture</a>
+      <a href="#scheduler">Scheduler</a>
+      <div class="group">Help</div>
+      <a href="#troubleshooting">Troubleshooting</a>
+      <a href="#faq">FAQ</a>
+      <a href="#limits">Limits &amp; notes</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+  <article class="content">
+    <div class="hero">
+      <p class="eyebrow">Frappe / ERPNext&nbsp;·&nbsp;v15+</p>
+      <h1>Notify Documentation</h1>
+      <p class="lead">Turn every Frappe bell notification into an Outlook-style <strong>desktop pop-up</strong> and a <strong>mobile lock-screen alert</strong> — powered by your own free Firebase project, with no external relay and no per-message cost.</p>
+      <div class="meta">
+        <span class="pill">🔔 Desktop &amp; mobile</span>
+        <span class="pill">🔥 Firebase Cloud Messaging</span>
+        <span class="pill">🧩 Works with any Frappe app</span>
+        <span class="pill">🔒 Credentials stay on your site</span>
+      </div>
+    </div>
+
+    <!-- ================= OVERVIEW ================= -->
+    <h2 id="overview">Overview</h2>
+    <p>Notify listens for anything that would appear in the Frappe <strong>bell</strong> (a mention, an assignment, a share, an approval, a workflow update) and delivers it in real time to the recipient's registered desktop browsers and phone. It runs on any Frappe site and works with any app — ERPNext, Frappe HR, LMS, or your own custom apps.</p>
+    <div class="grid">
+      <div class="card"><div class="ic">🖥️</div><h4>Desktop pop-ups</h4><p>A native OS notification with sound, even when the Frappe tab is minimised or in the background.</p></div>
+      <div class="card"><div class="ic">📱</div><h4>Mobile alerts</h4><p>Lock-screen push to employees' phones through the Frappe HR (ESS) app — no external relay server.</p></div>
+      <div class="card"><div class="ic">🎯</div><h4>Targeted rules</h4><p>Fan a document event out to everyone with access, or to specific roles, with optional Jinja templates.</p></div>
+      <div class="card"><div class="ic">🧾</div><h4>Full audit log</h4><p>Every send is recorded — who, what, and whether it was delivered, skipped, or failed.</p></div>
+    </div>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <h2 id="how-it-works">How it works</h2>
+    <p>Notify uses <strong>Firebase Cloud Messaging (FCM)</strong> — Google's free push service — to deliver messages to browsers and phones. You create your <em>own</em> free Firebase project, paste its credentials into <strong>Notify Settings</strong> once, and you are done. Delivery goes straight from your site to Google; there is no third-party relay in between.</p>
+    <div class="flow" role="img" aria-label="Flow: a bell notification is picked up by Notify, sent through your Firebase project, and delivered to desktop browsers and phones while writing an activity log.">
+      <svg viewBox="0 0 720 210" width="720" height="210" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/>
+          </marker>
+        </defs>
+        <g>
+          <rect x="8" y="82" width="150" height="46" rx="10" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <text x="83" y="102" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">Bell notification</text>
+          <text x="83" y="118" text-anchor="middle" font-size="11" fill="var(--muted)">Notification Log</text>
+
+          <rect x="205" y="82" width="120" height="46" rx="10" fill="var(--bell-wash)" stroke="var(--bell)"/>
+          <text x="265" y="102" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">Notify</text>
+          <text x="265" y="118" text-anchor="middle" font-size="11" fill="var(--muted)">dispatcher</text>
+
+          <rect x="372" y="82" width="150" height="46" rx="10" fill="var(--surface-2)" stroke="var(--hairline)"/>
+          <text x="447" y="102" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">Firebase (FCM)</text>
+          <text x="447" y="118" text-anchor="middle" font-size="11" fill="var(--muted)">your project</text>
+
+          <rect x="566" y="18" width="146" height="44" rx="10" fill="var(--surface)" stroke="var(--hairline)"/>
+          <text x="639" y="38" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">🖥️ Desktop</text>
+          <text x="639" y="53" text-anchor="middle" font-size="11" fill="var(--muted)">pop-up + sound</text>
+
+          <rect x="566" y="86" width="146" height="44" rx="10" fill="var(--surface)" stroke="var(--hairline)"/>
+          <text x="639" y="106" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">📱 Phone</text>
+          <text x="639" y="121" text-anchor="middle" font-size="11" fill="var(--muted)">lock-screen alert</text>
+
+          <rect x="566" y="150" width="146" height="44" rx="10" fill="var(--surface)" stroke="var(--hairline)"/>
+          <text x="639" y="170" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink)">🧾 Notify Log</text>
+          <text x="639" y="185" text-anchor="middle" font-size="11" fill="var(--muted)">audit record</text>
+
+          <line x1="158" y1="105" x2="203" y2="105" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="325" y1="105" x2="370" y2="105" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <path d="M522 100 C545 100 545 40 564 40" fill="none" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="522" y1="108" x2="564" y2="108" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <path d="M522 116 C545 116 545 172 564 172" fill="none" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+        </g>
+      </svg>
+    </div>
+    <p>There are two delivery paths, both handled in the background so a document save is never slowed down or broken by push delivery:</p>
+    <ul>
+      <li><strong>Bell mirror</strong> — every <code>Notification Log</code> the recipient receives is mirrored to their devices (when <em>Push All Bell Notifications</em> is on).</li>
+      <li><strong>Fan-out rules</strong> — a <code>Notify Rule</code> watches a DocType for an event (new / update / submit / workflow state) and notifies everyone with access, or specific roles. See <a href="#rules">Notification Rules</a>.</li>
+    </ul>
+
+    <!-- ================= PREREQUISITES ================= -->
+    <h2 id="prerequisites">Prerequisites</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Requirement</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>Frappe / ERPNext</td><td><strong>v15+</strong> site where you are a <strong>System Manager</strong>.</td></tr>
+        <tr><td>HTTPS</td><td>Required by browsers for push. <code>http://localhost</code> also counts as a secure context for local testing.</td></tr>
+        <tr><td>Google account</td><td>To create a free Firebase project (Spark/free plan is enough).</td></tr>
+        <tr><td>Python package</td><td><code>firebase-admin&nbsp;&gt;=&nbsp;6.5.0</code> — installed automatically with the app.</td></tr>
+        <tr><td>For mobile</td><td>The <strong>Frappe HR (HRMS)</strong> app installed on the same site.</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- ================= INSTALLATION ================= -->
+    <h2 id="installation">Installation</h2>
+    <p>From your bench directory, fetch the app and install it on your site:</p>
+    <div class="codewrap"><pre><code><span class="tok-c"># 1. Download the app into the bench</span>
+bench get-app notify &lt;your-repo-url&gt;
+
+<span class="tok-c"># 2. Install it on your site</span>
+bench --site your-site.com install-app notify
+
+<span class="tok-c"># 3. Build assets &amp; restart (production)</span>
+bench build --app notify
+bench restart</code></pre></div>
+    <p>The <code>firebase-admin</code> dependency installs with the app. If you ever need it explicitly:</p>
+    <div class="codewrap"><pre><code>./env/bin/pip install firebase-admin</code></pre></div>
+    <div class="callout tip"><span class="ic">✓</span><p>After installing, open <b>Notify Settings</b> and continue with <a href="#firebase">Firebase setup</a>. Nothing is sent until Notify is enabled and configured.</p></div>
+
+    <!-- ================= FIREBASE ================= -->
+    <h2 id="firebase">1 · Create a Firebase project</h2>
+    <p class="section-note">A one-time setup. Everything here is on Firebase's free plan.</p>
+
+    <h3>Step 1 — Create the project</h3>
+    <ol class="steps">
+      <li>Go to <a href="https://console.firebase.google.com" target="_blank" rel="noopener">console.firebase.google.com</a> and click <strong>Add project</strong>.</li>
+      <li>Give it a name (e.g. <em>My Company Notifications</em>) and finish. You can skip Google Analytics.</li>
+    </ol>
+
+    <h3>Step 2 — Add a Web app (gives you the web config)</h3>
+    <ol class="steps">
+      <li>On the project home, click the <strong>Web</strong> icon <code>&lt;/&gt;</code>.</li>
+      <li>Register the app with any nickname. You do <strong>not</strong> need Firebase Hosting.</li>
+      <li>Firebase shows a <code>firebaseConfig = { … }</code> snippet. Keep this tab open — you will paste it in <a href="#settings">step&nbsp;2</a>.</li>
+    </ol>
+
+    <h3>Step 3 — Generate the VAPID key (Web Push certificate)</h3>
+    <ol class="steps">
+      <li>Click the gear ⚙️ → <strong>Project settings</strong> → <strong>Cloud Messaging</strong> tab.</li>
+      <li>Under <strong>Web configuration → Web Push certificates</strong>, click <strong>Generate key pair</strong>.</li>
+      <li>Copy the key string it produces.</li>
+    </ol>
+
+    <h3>Step 4 — Download the Service Account (server key)</h3>
+    <ol class="steps">
+      <li><strong>Project settings</strong> → <strong>Service accounts</strong> tab.</li>
+      <li>Click <strong>Generate new private key</strong> → <strong>Generate key</strong>. A <code>.json</code> file downloads.</li>
+      <li>Keep this file safe — it is a <strong>secret</strong>.</li>
+    </ol>
+    <div class="callout crit"><span class="ic">🔒</span><p>The Web config values (Step 2) and VAPID key (Step 3) are <b>public</b> identifiers. The <b>Service Account JSON</b> (Step 4) is a <b>secret</b> — it stays only on your site and is never exposed to the browser.</p></div>
+
+    <!-- ================= SETTINGS ================= -->
+    <h2 id="settings">2 · Configure Notify Settings</h2>
+    <p>Open <strong>Notify Settings</strong> (type it in the Awesomebar / search).</p>
+    <ol class="steps">
+      <li><strong>Enable Notify</strong> — leave ticked.</li>
+      <li><strong>Firebase Web Configuration</strong> — click the <strong>Paste firebaseConfig</strong> button, paste the <code>firebaseConfig { … }</code> snippet from Firebase Step&nbsp;2, and click <strong>Fill Fields</strong>. This fills API Key, Auth Domain, Project ID, Messaging Sender ID and App ID automatically.</li>
+      <li><strong>VAPID Public Key</strong> — paste the key from Firebase Step&nbsp;3.</li>
+      <li><strong>Service Account JSON</strong> — open the <code>.json</code> from Firebase Step&nbsp;4 and paste its <strong>entire</strong> contents.</li>
+      <li>Click <strong>Save</strong>.</li>
+    </ol>
+    <p>A green <strong>“Push is configured and ready”</strong> banner confirms everything is valid. Use <strong>Send Test Notification</strong> to check (enable notifications in your browser first — see <a href="#desktop">step&nbsp;3</a>).</p>
+    <div class="callout note"><span class="ic">💡</span><p>The full field-by-field reference for this screen is in <a href="#dt-settings">DocType reference → Notify Settings</a>.</p></div>
+
+    <!-- ================= DESKTOP ================= -->
+    <h2 id="desktop">3 · Turn on desktop notifications</h2>
+    <p>Each user enables notifications <strong>once per browser</strong>:</p>
+    <ol class="steps">
+      <li>Open the Desk (<code>/app</code>). A blue banner appears at the top: <strong>“Turn on notifications…”</strong>.</li>
+      <li>Click <strong>Enable Notifications</strong>.</li>
+      <li>The browser asks for permission — click <strong>Allow</strong>.</li>
+    </ol>
+    <p>From then on the device registers itself silently on every login and receives pop-ups automatically. Each different browser or computer needs its own one-time <strong>Allow</strong>.</p>
+    <div class="callout warn"><span class="ic">⚠️</span><p>If a user previously <b>blocked</b> notifications the browser will not ask again. They must click the lock/tune icon in the address bar → <b>Site settings</b> → set <b>Notifications</b> to <em>Allow</em>, then reload.</p></div>
+    <p>To enable manually from the browser console: <code>frappe.notify.enable()</code> — see the <a href="#jsapi">Client JS API</a>.</p>
+
+    <!-- ================= MOBILE ================= -->
+    <h2 id="mobile">4 · Turn on mobile (ESS) notifications</h2>
+    <p>Requires the <strong>Frappe HR</strong> app installed and the site on <strong>HTTPS</strong>. Notify makes the HR ESS mobile PWA work against your direct-FCM engine instead of an external relay, without modifying HRMS.</p>
+    <h4>Administrator — once</h4>
+    <ol class="steps">
+      <li>In <strong>Notify Settings</strong>, tick <strong>Enable Mobile / ESS Push</strong>.</li>
+      <li>Set <strong>Public Site URL</strong> to the HTTPS address employees use (e.g. <code>https://hr.company.com</code>), or leave blank to auto-detect.</li>
+      <li>Save. Notify keeps the HRMS relay flag and <code>push_relay_server_url</code> in sync for you.</li>
+    </ol>
+    <h4>Each employee — once, on their phone</h4>
+    <ol class="steps">
+      <li>Open the HR app URL in the phone browser.</li>
+      <li>Install it — <strong>Android (Chrome):</strong> menu → <em>Add to Home screen</em>; <strong>iPhone (Safari):</strong> Share → <em>Add to Home Screen</em> (required on iOS). Open it from the new icon.</li>
+      <li>In the app: <strong>Profile → Settings → Enable Push Notifications → Allow</strong>.</li>
+    </ol>
+    <div class="callout note"><span class="ic">📱</span><p>iPhone web push requires the app to be <b>installed to the Home Screen</b> (iOS 16.4+); it does not work in a plain Safari tab.</p></div>
+
+    <!-- ================= EVERYDAY ================= -->
+    <h2 id="everyday">Everyday use</h2>
+    <p>There is nothing to do day-to-day — Notify works in the background. A push is delivered whenever the recipient would get a bell notification, for example:</p>
+    <ul>
+      <li>Someone <strong>@mentions</strong> you or <strong>assigns</strong> you a document</li>
+      <li>A document is <strong>shared</strong> with you</li>
+      <li>A <strong>workflow</strong> action needs your approval, or your request is approved / rejected</li>
+      <li>HR events (leave, expense, shift approvals) for ESS users</li>
+    </ul>
+    <p>Click a pop-up (desktop or phone) to <strong>open the related document</strong> and act on it. To send yourself a test at any time, open <strong>Notify Settings → Send Test Notification</strong>.</p>
+
+    <!-- ================= RULES ================= -->
+    <h2 id="rules">Notification Rules</h2>
+    <p>By default <strong>Push All Bell Notifications</strong> is on, so everything in the bell is delivered. <strong>Notify Rules</strong> let you push events that don't normally raise a bell notification — for example “notify all HR Managers whenever a Job Opening is submitted.”</p>
+    <p>Create a <strong>Notify Rule</strong>:</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Field</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Reference DocType</strong></td><td>The DocType to watch, e.g. <em>Job Opening</em>.</td></tr>
+        <tr><td><strong>Trigger Event</strong></td><td>One of <code>New Document</code>, <code>On Update</code>, <code>On Submit</code>, or <code>Workflow State Reached</code>.</td></tr>
+        <tr><td><strong>Workflow State</strong></td><td>Shown only for <em>Workflow State Reached</em> — notify only when the document enters this state (e.g. <em>Pending CEO Approval</em>).</td></tr>
+        <tr><td><strong>Notify</strong></td><td><code>All Users With Access</code> (everyone whose role can read the doctype) or <code>Users With Specific Roles</code>.</td></tr>
+        <tr><td><strong>Roles</strong></td><td>Shown for <em>Specific Roles</em> — the roles to notify.</td></tr>
+        <tr><td><strong>Title / Body / Link templates</strong></td><td>Optional Jinja templates to customise the message. Context: <code>doc</code> (the document), <code>user</code>.</td></tr>
+        <tr><td><strong>Play Sound</strong></td><td>Play a sound for this rule.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Every recipient is still checked individually for permission to the specific record — a rule never leaks a document to someone who can't read it. Only <strong>enabled</strong> rules that match are delivered.</p>
+    <h4>Template example</h4>
+    <div class="codewrap"><pre><code><span class="tok-c"># Title Template</span>
+New {{ doc.doctype }}: {{ doc.name }}
+<span class="tok-c"># Body Template</span>
+{{ doc.get("job_title") or doc.name }} needs your review.</code></pre></div>
+
+    <!-- ================= DEVICES ================= -->
+    <h2 id="devices">Managing devices</h2>
+    <p>Every browser or phone that enables notifications appears in <strong>Notify Device</strong>. You normally never touch this list — it fills and cleans itself:</p>
+    <ul>
+      <li>Devices <strong>register automatically</strong> when a user allows notifications.</li>
+      <li>Tokens FCM reports as invalid are <strong>disabled automatically</strong> on the next send.</li>
+      <li>Devices unused beyond the <strong>Remove Inactive Devices</strong> window are cleared by a <a href="#scheduler">daily job</a>.</li>
+    </ul>
+
+    <!-- ================= LOG ================= -->
+    <h2 id="log">Delivery log</h2>
+    <p><strong>Notify Log</strong> records every send for auditing and troubleshooting — the user, the content, how many devices were targeted, and the outcome:</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>Queued</code></td><td>Accepted and handed to the background job.</td></tr>
+        <tr><td><code>Sent</code></td><td>At least one device accepted the message from FCM.</td></tr>
+        <tr><td><code>Skipped</code></td><td>Not sent by design — no access to the referenced document, or quiet hours.</td></tr>
+        <tr><td><code>Failed</code></td><td>No device accepted the message (see <a href="#troubleshooting">Troubleshooting</a>).</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- ================= DOCTYPE REFERENCE ================= -->
+    <h2 id="doctypes">DocType reference</h2>
+    <p>Notify ships five DocTypes, all under the <strong>Notify</strong> module.</p>
+
+    <h3 id="dt-settings">Notify Settings <span class="badge single">Single</span></h3>
+    <p>Central configuration. Open it from the Awesomebar.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>enabled</code></td><td>Check</td><td>Master on/off switch for all notifications.</td></tr>
+        <tr><td><code>project_name</code></td><td>Data</td><td>Internal label for this integration. Leave as default.</td></tr>
+        <tr><td><code>firebase_api_key</code></td><td>Data</td><td>Firebase web <code>apiKey</code>.</td></tr>
+        <tr><td><code>firebase_auth_domain</code></td><td>Data</td><td>Firebase <code>authDomain</code>.</td></tr>
+        <tr><td><code>firebase_project_id</code></td><td>Data</td><td>Firebase <code>projectId</code>.</td></tr>
+        <tr><td><code>firebase_messaging_sender_id</code></td><td>Data</td><td>Cloud Messaging sender ID.</td></tr>
+        <tr><td><code>firebase_app_id</code></td><td>Data</td><td>Firebase web <code>appId</code>.</td></tr>
+        <tr><td><code>firebase_vapid_key</code></td><td>Small Text</td><td>Web Push public (VAPID) key.</td></tr>
+        <tr><td><code>service_account_json</code></td><td>Code</td><td><b>Secret</b> service-account key used server-side to send.</td></tr>
+        <tr><td><code>enable_mobile_push</code></td><td>Check</td><td>Turns on phone alerts via the Frappe HR app.</td></tr>
+        <tr><td><code>site_url</code></td><td>Data</td><td>Public HTTPS address employees use for the HR app.</td></tr>
+        <tr><td><code>push_all_notification_logs</code></td><td>Check</td><td>On: mirror everything in the bell. Off: only <a href="#rules">rule</a> matches.</td></tr>
+        <tr><td><code>default_sound</code></td><td>Check</td><td>Play a sound with the desktop pop-up.</td></tr>
+        <tr><td><code>custom_sound</code></td><td>Attach</td><td>Your own MP3/WAV for the foreground desktop chime.</td></tr>
+        <tr><td><code>default_icon</code></td><td>Attach Image</td><td>Icon shown when the source item has none (e.g. your logo).</td></tr>
+        <tr><td><code>respect_quiet_hours</code></td><td>Check</td><td>Pause alerts during a chosen window.</td></tr>
+        <tr><td><code>quiet_hours_start</code> / <code>quiet_hours_end</code></td><td>Time</td><td>The pause window (supports overnight windows).</td></tr>
+        <tr><td><code>stale_device_days</code></td><td>Int</td><td>Auto-forget devices unused for this many days (default 60).</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="dt-rule">Notify Rule</h3>
+    <p>A fan-out rule. See <a href="#rules">Notification Rules</a> for the guide. Key fields: <code>rule_name</code> (unique), <code>enabled</code>, <code>reference_doctype</code>, <code>trigger_event</code>, <code>workflow_state</code>, <code>notify</code>, <code>roles</code>, <code>title_template</code>, <code>body_template</code>, <code>link_template</code>, <code>sound</code>.</p>
+
+    <h3 id="dt-rulerole">Notify Rule Role <span class="badge single">Child</span></h3>
+    <p>Child table of Notify Rule holding one <code>role</code> (Link → Role) per row, used when <em>Notify</em> is set to <em>Users With Specific Roles</em>.</p>
+
+    <h3 id="dt-device">Notify Device</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>user</code></td><td>Link → User</td><td>Owner of the device.</td></tr>
+        <tr><td><code>enabled</code></td><td>Check</td><td>Whether the device receives pushes.</td></tr>
+        <tr><td><code>platform</code></td><td>Select</td><td><code>Desktop</code>, <code>Mobile</code>, or <code>Native</code>.</td></tr>
+        <tr><td><code>project</code></td><td>Data</td><td>Relay project tag (e.g. <code>notify</code> or <code>hrms</code>).</td></tr>
+        <tr><td><code>fcm_token</code></td><td>Small Text</td><td>FCM registration token for this browser/device.</td></tr>
+        <tr><td><code>token_hash</code></td><td>Data</td><td>SHA-256 of the token — enforces one row per token (unique).</td></tr>
+        <tr><td><code>user_agent</code></td><td>Small Text</td><td>Captured on registration.</td></tr>
+        <tr><td><code>last_seen</code></td><td>Datetime</td><td>Updated by heartbeats; drives stale-device cleanup.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="dt-log">Notify Log</h3>
+    <p>Read-only audit record created for every send. Fields: <code>user</code>, <code>status</code>, <code>channel</code> (<code>Both</code>/<code>Desktop</code>/<code>Mobile</code>), <code>devices_count</code>, <code>title</code>, <code>body</code>, <code>link</code>, <code>reference_doctype</code>, <code>reference_name</code>, <code>error</code>.</p>
+
+    <!-- ================= API ================= -->
+    <h2 id="api">Whitelisted API</h2>
+    <p>All endpoints live under <code>notify.api</code> and are called at <code>/api/method/notify.api.&lt;method&gt;</code>.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Method</th><th>Access</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>client_config</code></td><td><span class="badge post">session</span></td><td>Public Firebase web config + readiness flags for the browser client.</td></tr>
+        <tr><td><code>register_device</code></td><td><span class="badge post">session</span></td><td>Register / refresh this browser's FCM token for the current user.</td></tr>
+        <tr><td><code>unregister_device</code></td><td><span class="badge post">session</span></td><td>Remove this device's token (e.g. on logout).</td></tr>
+        <tr><td><code>heartbeat</code></td><td><span class="badge post">session</span></td><td>Update <code>last_seen</code> so the device is not pruned as stale.</td></tr>
+        <tr><td><code>send_test_notification</code></td><td><span class="badge post">session</span></td><td>Send a test push to the current user's devices.</td></tr>
+        <tr><td><code>service_worker</code></td><td><span class="badge get">guest · GET</span></td><td>Serves the FCM service worker at root scope (<code>Service-Worker-Allowed: /</code>).</td></tr>
+        <tr><td><code>notification_sound</code></td><td><span class="badge get">guest · GET</span></td><td>Streams the configured chime with a public, cacheable URL.</td></tr>
+        <tr><td><code>relay_get_config</code></td><td><span class="badge get">guest · GET</span></td><td>Firebase config in the raw shape the HRMS PWA expects.</td></tr>
+        <tr><td><code>subscribe</code> / <code>unsubscribe</code></td><td><span class="badge get">GET</span></td><td>HRMS PWA token registration (override targets — see below).</td></tr>
+        <tr><td><code>cleanup_stale_devices</code></td><td><span class="badge single">scheduler</span></td><td>Daily job that removes devices unused past the configured window.</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- ================= JS API ================= -->
+    <h2 id="jsapi">Client JS API</h2>
+    <p>The desk client exposes helpers on <code>frappe.notify</code> — handy from the browser console for testing and diagnostics.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Call</th><th>Does</th></tr></thead>
+      <tbody>
+        <tr><td><code>frappe.notify.enable()</code></td><td>Request permission and register this browser.</td></tr>
+        <tr><td><code>frappe.notify.register()</code></td><td>Force (re-)registration of this browser's token and report the result.</td></tr>
+        <tr><td><code>frappe.notify.sendTest()</code></td><td>Trigger a server-side test push to your devices.</td></tr>
+        <tr><td><code>frappe.notify.diagnose()</code></td><td>Print why sound / pop-ups may not work (permission, token, audio, sound URL).</td></tr>
+        <tr><td><code>frappe.notify.simulate()</code></td><td>Fake a foreground message (toast + OS pop-up + sound) without FCM.</td></tr>
+        <tr><td><code>frappe.notify.testBridge()</code></td><td>Round-trip through the service worker to prove the push→page bridge works.</td></tr>
+        <tr><td><code>frappe.notify.playSound()</code></td><td>Play the chime directly.</td></tr>
+        <tr><td><code>frappe.notify.resetPrompt()</code></td><td>Clear the “don't nag” flags and show the enable banner again.</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- ================= ARCHITECTURE ================= -->
+    <h2 id="architecture">Hooks &amp; architecture</h2>
+    <p>For developers, here is how Notify wires into Frappe (from <code>hooks.py</code>):</p>
+    <div class="codewrap"><pre><code><span class="tok-c"># Desk client bundle (content-hashed, cache-busting)</span>
+app_include_js = "notify.bundle.js"
+
+<span class="tok-c"># Inject the public Firebase web config into bootinfo for logged-in users</span>
+extend_bootinfo = "notify.api.boot_firebase_config"
+
+<span class="tok-c"># Every bell notification becomes a push; rules fan out on document events</span>
+doc_events = {
+    "Notification Log": {"after_insert": "notify.dispatcher.on_notification_log"},
+    "PWA Notification": {"after_insert": "notify.dispatcher.on_pwa_notification"},
+    "*": {
+        "after_insert": "notify.dispatcher.on_document_event",
+        "on_update":   "notify.dispatcher.on_document_event",
+        "on_submit":   "notify.dispatcher.on_document_event",
+    },
+}
+
+<span class="tok-c"># Make the HRMS ESS PWA use our direct-FCM engine (no external relay)</span>
+override_whitelisted_methods = {
+    "notification_relay.api.get_config":     "notify.api.relay_get_config",
+    "frappe.push_notification.subscribe":    "notify.api.subscribe",
+    "frappe.push_notification.unsubscribe":  "notify.api.unsubscribe",
+}
+
+<span class="tok-c"># Daily cleanup of stale device tokens</span>
+scheduler_events = {"daily": ["notify.api.cleanup_stale_devices"]}</code></pre></div>
+    <p>Module layout:</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>File</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td><code>notify/dispatcher.py</code></td><td>Turns bell notifications &amp; document events into pushes; applies rules, access checks and quiet hours; writes Notify Log. Heavy work runs in background jobs.</td></tr>
+        <tr><td><code>notify/push.py</code></td><td>Direct FCM sender via the <code>firebase-admin</code> SDK; caches the initialised app per service account; disables tokens FCM rejects.</td></tr>
+        <tr><td><code>notify/api.py</code></td><td>Whitelisted endpoints, boot config, and scheduled maintenance.</td></tr>
+        <tr><td><code>notify/service_worker.js</code></td><td>Background FCM handler served at root scope; shows the OS toast and bridges every push to open pages.</td></tr>
+        <tr><td><code>notify/public/js/notify.bundle.js</code></td><td>Desk client: registers the SW, requests permission, registers the token, shows in-app toast + sound.</td></tr>
+      </tbody>
+    </table></div>
+
+    <!-- ================= SCHEDULER ================= -->
+    <h2 id="scheduler">Scheduler &amp; maintenance</h2>
+    <p>Notify registers one daily scheduler job, <code>notify.api.cleanup_stale_devices</code>, which removes <strong>Notify Device</strong> rows whose <code>last_seen</code> is older than <strong>Remove Inactive Devices After (days)</strong> (default 60). No other background jobs run on a schedule; all push delivery is enqueued on demand and processed by the <code>short</code> queue.</p>
+
+    <!-- ================= TROUBLESHOOTING ================= -->
+    <h2 id="troubleshooting">Troubleshooting</h2>
+
+    <h4>The green “ready” banner doesn't appear</h4>
+    <p>Make sure all Firebase web fields, the VAPID key, and the complete Service Account JSON are filled, then Save.</p>
+
+    <h4>A user sees no “Enable” banner</h4>
+    <p>They have already granted permission (nothing to do), or the site isn't on HTTPS. Push requires HTTPS (or <code>localhost</code>).</p>
+
+    <h4>Notifications were blocked by the user</h4>
+    <p>Browsers won't re-ask once blocked. Click the lock/tune icon in the address bar → <strong>Site settings</strong> → set <strong>Notifications</strong> to <em>Allow</em> → reload.</p>
+
+    <h4>Everything is “ready” but pop-ups don't arrive (desktop)</h4>
+    <p>The most common cause on corporate networks is a <strong>firewall blocking Google's push connection</strong>. FCM uses a persistent connection to Google on <strong>ports 5228–5230</strong>. Open <code>chrome://gcm-internals/</code> and check <strong>Connection State</strong> — if it isn't <em>Connected</em>, the network is blocking it.</p>
+    <div class="callout warn"><span class="ic">🌐</span><p>Ask IT to allow outbound to <code>mtalk.google.com</code> on ports <b>5228–5230</b> (plus 443), or test on a phone hotspot to confirm.</p></div>
+
+    <h4>Phone gets nothing</h4>
+    <ul>
+      <li>iPhone: the app must be <strong>installed to the Home Screen</strong> (iOS 16.4+); web push doesn't work in a plain Safari tab.</li>
+      <li>Check the phone allows notifications for the app and isn't in Do Not Disturb.</li>
+      <li>On office Wi-Fi the same port-5228 block applies; phones usually work on mobile data.</li>
+    </ul>
+
+    <h4>No sound</h4>
+    <p>Ensure <strong>Play Sound</strong> is on. A custom sound plays for the desktop pop-up while the tab is in front; background and mobile alerts use the device's own notification sound (a browser/OS rule).</p>
+
+    <!-- ================= FAQ ================= -->
+    <h2 id="faq">FAQ</h2>
+    <h4>Do I have to register each user's device manually?</h4>
+    <p>No. Users allow notifications once per browser/phone; devices register themselves automatically after that.</p>
+    <h4>Can I enable notifications for everyone by default?</h4>
+    <p>Browsers require each user to allow once — it can't be pre-granted, except by an IT-managed browser policy (Chrome Enterprise / MDM) that auto-allows your site's URL.</p>
+    <h4>Does it cost anything?</h4>
+    <p>No. It uses your own free Firebase project and sends directly — no relay, no per-message fee.</p>
+    <h4>Which apps does it work with?</h4>
+    <p>Any Frappe app, because it hooks into the standard bell (Notification Log) — ERPNext, HR, LMS, and custom apps.</p>
+    <h4>Is my data sent anywhere?</h4>
+    <p>Credentials stay on your site. Delivery goes through your own Firebase project (Google), like any push notification.</p>
+
+    <!-- ================= LIMITS ================= -->
+    <h2 id="limits">Limits &amp; notes</h2>
+    <ul>
+      <li><strong>Desktop pop-ups</strong> appear while the <strong>browser is running</strong> (the tab may be closed/minimised). A pop-up with no browser open at all needs a native desktop app and is out of scope.</li>
+      <li><strong>iPhone</strong> web push requires the app installed to the Home Screen (iOS 16.4+).</li>
+      <li><strong>Custom sound</strong> applies to the desktop foreground pop-up; background and mobile alerts use the device's default notification sound.</li>
+      <li><strong>HTTPS is required</strong> for push on real devices; <code>localhost</code> works for local testing.</li>
+      <li>Networks that block Google's push ports (5228–5230) will prevent delivery on that network.</li>
+    </ul>
+
+    <div class="docfoot">
+      <p><strong>Notify</strong> — desktop &amp; mobile push for Frappe / ERPNext. For live status, check <strong>Notify Log</strong>; for setup, start at <a href="#firebase">Firebase project</a>. Published by Finstein.</p>
+    </div>
+  </article>
+  </div>
+</div>
+
+<script>
+(function(){
+  // theme toggle (cycles system -> light -> dark)
+  var root=document.documentElement, btn=document.getElementById('themeBtn'),
+      ic=document.getElementById('themeIc'), lbl=document.getElementById('themeLabel');
+  var order=['system','light','dark'], names={system:'System',light:'Light',dark:'Dark'}, icons={system:'◐',light:'☀',dark:'☾'};
+  var cur='system';
+  try{ cur=localStorage.getItem('notify-docs-theme')||'system'; }catch(e){}
+  function apply(t){
+    if(t==='system'){ root.removeAttribute('data-theme'); } else { root.setAttribute('data-theme',t); }
+    ic.textContent=icons[t]; lbl.textContent=names[t];
+    try{ localStorage.setItem('notify-docs-theme',t); }catch(e){}
+  }
+  apply(cur);
+  btn.addEventListener('click',function(){ cur=order[(order.indexOf(cur)+1)%order.length]; apply(cur); });
+
+  // mobile nav
+  var body=document.body, menu=document.getElementById('menuBtn'), scrim=document.getElementById('scrim');
+  function close(){ body.classList.remove('nav-open'); }
+  if(menu) menu.addEventListener('click',function(){ body.classList.toggle('nav-open'); });
+  if(scrim) scrim.addEventListener('click',close);
+
+  // scroll-spy
+  var links=[].slice.call(document.querySelectorAll('#nav a'));
+  var map={}; links.forEach(function(a){ var id=a.getAttribute('href').slice(1); map[id]=a; });
+  var heads=[].slice.call(document.querySelectorAll('.content h2[id], .content h3[id]')).filter(function(h){return map[h.id];});
+  var obs=new IntersectionObserver(function(ents){
+    ents.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){l.classList.remove('active');});
+        if(map[e.target.id]) map[e.target.id].classList.add('active');
+      }
+    });
+  },{rootMargin:'-10% 0px -80% 0px',threshold:0});
+  heads.forEach(function(h){obs.observe(h);});
+  links.forEach(function(a){ a.addEventListener('click',function(){ if(window.innerWidth<=960) close(); }); });
+
+  // copy buttons
+  document.querySelectorAll('.codewrap').forEach(function(w){
+    var pre=w.querySelector('pre'); if(!pre) return;
+    var b=document.createElement('button'); b.className='copybtn'; b.type='button'; b.textContent='Copy';
+    b.addEventListener('click',function(){
+      var t=pre.innerText;
+      navigator.clipboard&&navigator.clipboard.writeText(t).then(function(){
+        b.textContent='Copied'; setTimeout(function(){b.textContent='Copy';},1400);
+      });
+    });
+    w.appendChild(b);
+  });
+})();
+</script>
+</body>
+</html>

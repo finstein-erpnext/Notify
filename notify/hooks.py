@@ -1,5 +1,5 @@
-app_name = "fin_notification"
-app_title = "Fin Notification"
+app_name = "notify"
+app_title = "Notify"
 app_publisher = "Finstein"
 app_description = "Outlook-style desktop and mobile push notifications for Frappe/ERPNext bell notifications"
 app_email = "ramachandran.mbajan25@srmus.edu.in"
@@ -13,11 +13,11 @@ app_license = "mit"
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
-# 		"name": "fin_notification",
-# 		"logo": "/assets/fin_notification/logo.png",
-# 		"title": "Fin Notification",
-# 		"route": "/fin_notification",
-# 		"has_permission": "fin_notification.api.permission.has_app_permission"
+# 		"name": "notify",
+# 		"logo": "/assets/notify/logo.png",
+# 		"title": "Notify",
+# 		"route": "/notify",
+# 		"has_permission": "notify.api.permission.has_app_permission"
 # 	}
 # ]
 
@@ -25,15 +25,15 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/fin_notification/css/fin_notification.css"
-# app_include_js = "/assets/fin_notification/js/fin_notification.js"
+# app_include_css = "/assets/notify/css/notify.css"
+# app_include_js = "/assets/notify/js/notify.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/fin_notification/css/fin_notification.css"
-# web_include_js = "/assets/fin_notification/js/fin_notification.js"
+# web_include_css = "/assets/notify/css/notify.css"
+# web_include_js = "/assets/notify/js/notify.js"
 
 # include custom scss in every website theme (without file extension ".scss")
-# website_theme_scss = "fin_notification/public/scss/website"
+# website_theme_scss = "notify/public/scss/website"
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
@@ -51,7 +51,7 @@ app_license = "mit"
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "fin_notification/public/icons.svg"
+# app_include_icons = "notify/public/icons.svg"
 
 # Home Pages
 # ----------
@@ -75,43 +75,43 @@ app_license = "mit"
 
 # add methods and filters to jinja environment
 # jinja = {
-# 	"methods": "fin_notification.utils.jinja_methods",
-# 	"filters": "fin_notification.utils.jinja_filters"
+# 	"methods": "notify.utils.jinja_methods",
+# 	"filters": "notify.utils.jinja_filters"
 # }
 
 # Installation
 # ------------
 
-# before_install = "fin_notification.install.before_install"
-# after_install = "fin_notification.install.after_install"
+# before_install = "notify.install.before_install"
+# after_install = "notify.install.after_install"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "fin_notification.uninstall.before_uninstall"
-# after_uninstall = "fin_notification.uninstall.after_uninstall"
+# before_uninstall = "notify.uninstall.before_uninstall"
+# after_uninstall = "notify.uninstall.after_uninstall"
 
 # Integration Setup
 # ------------------
 # To set up dependencies/integrations with other apps
 # Name of the app being installed is passed as an argument
 
-# before_app_install = "fin_notification.utils.before_app_install"
-# after_app_install = "fin_notification.utils.after_app_install"
+# before_app_install = "notify.utils.before_app_install"
+# after_app_install = "notify.utils.after_app_install"
 
 # Integration Cleanup
 # -------------------
 # To clean up dependencies/integrations with other apps
 # Name of the app being uninstalled is passed as an argument
 
-# before_app_uninstall = "fin_notification.utils.before_app_uninstall"
-# after_app_uninstall = "fin_notification.utils.after_app_uninstall"
+# before_app_uninstall = "notify.utils.before_app_uninstall"
+# after_app_uninstall = "notify.utils.after_app_uninstall"
 
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "fin_notification.notifications.get_notification_config"
+# notification_config = "notify.notifications.get_notification_config"
 
 # Permissions
 # -----------
@@ -150,39 +150,39 @@ app_license = "mit"
 
 # scheduler_events = {
 # 	"all": [
-# 		"fin_notification.tasks.all"
+# 		"notify.tasks.all"
 # 	],
 # 	"daily": [
-# 		"fin_notification.tasks.daily"
+# 		"notify.tasks.daily"
 # 	],
 # 	"hourly": [
-# 		"fin_notification.tasks.hourly"
+# 		"notify.tasks.hourly"
 # 	],
 # 	"weekly": [
-# 		"fin_notification.tasks.weekly"
+# 		"notify.tasks.weekly"
 # 	],
 # 	"monthly": [
-# 		"fin_notification.tasks.monthly"
+# 		"notify.tasks.monthly"
 # 	],
 # }
 
 # Testing
 # -------
 
-# before_tests = "fin_notification.install.before_tests"
+# before_tests = "notify.install.before_tests"
 
 # Overriding Methods
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "fin_notification.event.get_events"
+# 	"frappe.desk.doctype.event.event.get_events": "notify.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-# 	"Task": "fin_notification.task.get_dashboard_data"
+# 	"Task": "notify.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -196,13 +196,13 @@ app_license = "mit"
 
 # Request Events
 # ----------------
-# before_request = ["fin_notification.utils.before_request"]
-# after_request = ["fin_notification.utils.after_request"]
+# before_request = ["notify.utils.before_request"]
+# after_request = ["notify.utils.after_request"]
 
 # Job Events
 # ----------
-# before_job = ["fin_notification.utils.before_job"]
-# after_job = ["fin_notification.utils.after_job"]
+# before_job = ["notify.utils.before_job"]
+# after_job = ["notify.utils.after_job"]
 
 # User Data Protection
 # --------------------
@@ -232,7 +232,7 @@ app_license = "mit"
 # --------------------------------
 
 # auth_hooks = [
-# 	"fin_notification.auth.validate"
+# 	"notify.auth.validate"
 # ]
 
 # Automatically update python controller files with type annotations for this app.
@@ -246,4 +246,52 @@ app_license = "mit"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
+
+
+# =============================================================================
+# Notify — active configuration
+# =============================================================================
+
+# Desk client: registers the service worker, requests permission, registers the
+# FCM token, and shows in-app toasts + sound when the tab is focused.
+# Referenced as a *bundle* so Frappe serves it with a content-hash filename that
+# auto-busts the browser cache on every change (a plain /assets path is cached forever).
+app_include_js = "notify.bundle.js"
+
+# Inject the (public) Firebase web config into bootinfo for logged-in desk users.
+extend_bootinfo = "notify.api.boot_firebase_config"
+
+# Core dispatcher: every bell notification (Notification Log) becomes a push.
+# PWA Notification is HRMS's own approval/leave/expense notification doctype.
+doc_events = {
+	"Notification Log": {
+		"after_insert": "notify.dispatcher.on_notification_log",
+	},
+	"PWA Notification": {
+		"after_insert": "notify.dispatcher.on_pwa_notification",
+	},
+	# Wildcard: powers role/access fan-out rules (Notify Rule). Cheap no-op
+	# for doctypes without a rule (fast cached membership check).
+	"*": {
+		"after_insert": "notify.dispatcher.on_document_event",
+		"on_update": "notify.dispatcher.on_document_event",
+		"on_submit": "notify.dispatcher.on_document_event",
+	},
+}
+
+# Make the Frappe HR (HRMS) ESS mobile PWA work against our direct-FCM engine
+# instead of an external relay, without modifying HRMS. The PWA is hard-wired to
+# call these method names; we intercept them here.
+override_whitelisted_methods = {
+	"notification_relay.api.get_config": "notify.api.relay_get_config",
+	"frappe.push_notification.subscribe": "notify.api.subscribe",
+	"frappe.push_notification.unsubscribe": "notify.api.unsubscribe",
+}
+
+# Daily cleanup of stale device tokens.
+scheduler_events = {
+	"daily": [
+		"notify.api.cleanup_stale_devices",
+	],
+}
 

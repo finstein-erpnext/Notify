@@ -1,0 +1,240 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-08-17 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "intro",
+  "enabled",
+  "project_name",
+  "firebase_web_section",
+  "firebase_web_help",
+  "firebase_api_key",
+  "firebase_auth_domain",
+  "firebase_project_id",
+  "column_break_web",
+  "firebase_messaging_sender_id",
+  "firebase_app_id",
+  "firebase_vapid_key",
+  "credentials_section",
+  "credentials_help",
+  "service_account_json",
+  "mobile_section",
+  "enable_mobile_push",
+  "site_url",
+  "delivery_section",
+  "push_all_notification_logs",
+  "column_break_delivery",
+  "default_sound",
+  "custom_sound",
+  "default_icon",
+  "quiet_hours_section",
+  "respect_quiet_hours",
+  "quiet_hours_start",
+  "quiet_hours_end",
+  "cleanup_section",
+  "stale_device_days"
+ ],
+ "fields": [
+  {
+   "fieldname": "intro",
+   "fieldtype": "HTML",
+   "options": "<div class='text-muted' style='padding:8px 0'>Notify delivers desktop pop-ups and mobile lock-screen alerts for your bell notifications, powered by your own free Firebase (Google) project. Complete the sections below once; all credentials stay on this site and are never shared. New here? Follow the 5-minute setup guide in the app README.</div>"
+  },
+  {
+   "default": "1",
+   "description": "Master switch. When off, no desktop or mobile notifications are sent.",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enable Notify"
+  },
+  {
+   "default": "notify",
+   "description": "An internal label for this integration. Leave the default unless a Notify specialist advises otherwise.",
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "label": "Project Name"
+  },
+  {
+   "fieldname": "firebase_web_section",
+   "fieldtype": "Section Break",
+   "label": "Firebase Web Configuration"
+  },
+  {
+   "fieldname": "firebase_web_help",
+   "fieldtype": "HTML",
+   "options": "<div class='text-muted' style='font-size:12px'>These five values identify your Firebase web app in the browser. Copy them from <b>Firebase Console \u2192 Project Settings \u2192 General \u2192 Your apps (Web app) \u2192 SDK setup and configuration \u2192 Config</b>. <b>Tip:</b> click <b>Paste firebaseConfig</b> at the top of this page to paste the whole snippet and fill every field automatically. These are public identifiers, not secrets.</div>"
+  },
+  {
+   "description": "Your Firebase web app key (the \"apiKey\" value). Identifies the project; not a password.",
+   "fieldname": "firebase_api_key",
+   "fieldtype": "Data",
+   "label": "API Key"
+  },
+  {
+   "description": "The \"authDomain\" value, usually <project-id>.firebaseapp.com.",
+   "fieldname": "firebase_auth_domain",
+   "fieldtype": "Data",
+   "label": "Auth Domain"
+  },
+  {
+   "description": "The \"projectId\" value \u2014 your Firebase project's unique ID.",
+   "fieldname": "firebase_project_id",
+   "fieldtype": "Data",
+   "label": "Project ID"
+  },
+  {
+   "fieldname": "column_break_web",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "The \"messagingSenderId\" value \u2014 the numeric ID of your Cloud Messaging sender.",
+   "fieldname": "firebase_messaging_sender_id",
+   "fieldtype": "Data",
+   "label": "Messaging Sender ID"
+  },
+  {
+   "description": "The \"appId\" value, e.g. 1:1234567890:web:abcdef123456.",
+   "fieldname": "firebase_app_id",
+   "fieldtype": "Data",
+   "label": "App ID"
+  },
+  {
+   "description": "The Web Push public key that lets browsers subscribe. Generate it in Firebase Console \u2192 Project Settings \u2192 Cloud Messaging \u2192 Web configuration \u2192 Web Push certificates \u2192 Generate key pair, then paste the key here.",
+   "fieldname": "firebase_vapid_key",
+   "fieldtype": "Small Text",
+   "label": "VAPID Public Key"
+  },
+  {
+   "fieldname": "credentials_section",
+   "fieldtype": "Section Break",
+   "label": "Server Credentials (Service Account)"
+  },
+  {
+   "fieldname": "credentials_help",
+   "fieldtype": "HTML",
+   "options": "<div class='text-muted' style='font-size:12px'>This is the private key your server uses to send notifications to Firebase. In <b>Firebase Console \u2192 Project Settings \u2192 Service accounts</b>, click <b>Generate new private key</b> to download a JSON file, then paste its full contents below. <b>Keep this secret</b> \u2014 it is stored only on this site and never sent anywhere else.</div>"
+  },
+  {
+   "description": "Paste the complete contents of the service-account JSON file (starts with { \"type\": \"service_account\", ... }).",
+   "fieldname": "service_account_json",
+   "fieldtype": "Code",
+   "label": "Service Account JSON",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "mobile_section",
+   "fieldtype": "Section Break",
+   "label": "Mobile / ESS (Frappe HR App)"
+  },
+  {
+   "default": "0",
+   "description": "Send notifications to employees' phones through the Frappe HR (ESS) mobile app. Requires the Frappe HR app to be installed and the site to be reachable over HTTPS.",
+   "fieldname": "enable_mobile_push",
+   "fieldtype": "Check",
+   "label": "Enable Mobile / ESS Push"
+  },
+  {
+   "depends_on": "enable_mobile_push",
+   "description": "The public https:// address employees use to open the HR app (for example https://hr.yourcompany.com). Leave blank to detect it automatically.",
+   "fieldname": "site_url",
+   "fieldtype": "Data",
+   "label": "Public Site URL"
+  },
+  {
+   "fieldname": "delivery_section",
+   "fieldtype": "Section Break",
+   "label": "Delivery"
+  },
+  {
+   "default": "1",
+   "description": "On: send a notification for everything that appears in the bell (mentions, assignments, approvals, workflow updates). Off: send only the events you define under Notify Rule.",
+   "fieldname": "push_all_notification_logs",
+   "fieldtype": "Check",
+   "label": "Push All Bell Notifications"
+  },
+  {
+   "fieldname": "column_break_delivery",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "description": "Play a sound with the desktop pop-up.",
+   "fieldname": "default_sound",
+   "fieldtype": "Check",
+   "label": "Play Sound"
+  },
+  {
+   "depends_on": "default_sound",
+   "description": "Upload your own alert sound (MP3 or WAV, ideally under 2 seconds). Plays with the desktop pop-up. Leave empty to use the built-in chime. (Background and mobile alerts use the device's own notification sound.)",
+   "fieldname": "custom_sound",
+   "fieldtype": "Attach",
+   "label": "Custom Sound"
+  },
+  {
+   "description": "An image shown on the notification when the source item has no icon of its own (for example your company logo).",
+   "fieldname": "default_icon",
+   "fieldtype": "Attach Image",
+   "label": "Default Icon"
+  },
+  {
+   "fieldname": "quiet_hours_section",
+   "fieldtype": "Section Break",
+   "label": "Quiet Hours"
+  },
+  {
+   "default": "0",
+   "description": "Pause desktop and mobile alerts during the time window below (for example overnight). The in-app bell still updates as normal.",
+   "fieldname": "respect_quiet_hours",
+   "fieldtype": "Check",
+   "label": "Respect Quiet Hours"
+  },
+  {
+   "depends_on": "respect_quiet_hours",
+   "fieldname": "quiet_hours_start",
+   "fieldtype": "Time",
+   "label": "Quiet Hours Start"
+  },
+  {
+   "depends_on": "respect_quiet_hours",
+   "fieldname": "quiet_hours_end",
+   "fieldtype": "Time",
+   "label": "Quiet Hours End"
+  },
+  {
+   "fieldname": "cleanup_section",
+   "fieldtype": "Section Break",
+   "label": "Maintenance"
+  },
+  {
+   "default": "60",
+   "description": "Automatically forget a device if it hasn't connected for this many days (keeps the device list tidy). A daily background job handles the cleanup.",
+   "fieldname": "stale_device_days",
+   "fieldtype": "Int",
+   "label": "Remove Inactive Devices After (days)"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-08-18 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Notify",
+ "name": "Notify Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

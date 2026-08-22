@@ -1,0 +1,159 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:rule_name",
+ "creation": "2026-08-17 00:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "intro",
+  "rule_name",
+  "enabled",
+  "column_break_top",
+  "reference_doctype",
+  "trigger_section",
+  "trigger_event",
+  "workflow_state",
+  "audience_section",
+  "notify",
+  "roles",
+  "content_section",
+  "title_template",
+  "body_template",
+  "link_template",
+  "options_section",
+  "sound"
+ ],
+ "fields": [
+  {
+   "fieldname": "intro",
+   "fieldtype": "HTML",
+   "options": "<div class=\"text-muted\" style=\"padding:6px 0;\">Fan-out rule: when an event happens on the chosen DocType, notify everyone who has access to it (or only chosen roles). Each recipient is still checked individually for permission to that specific record.</div>"
+  },
+  {
+   "fieldname": "rule_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Rule Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "column_break_top",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "The DocType to watch, e.g. Job Opening.",
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Reference DocType",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "trigger_section",
+   "fieldtype": "Section Break",
+   "label": "When to notify"
+  },
+  {
+   "default": "New Document",
+   "description": "Which event on the DocType triggers the notification.",
+   "fieldname": "trigger_event",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Trigger Event",
+   "options": "New Document\nOn Update\nOn Submit\nWorkflow State Reached"
+  },
+  {
+   "depends_on": "eval:doc.trigger_event=='Workflow State Reached'",
+   "description": "Notify only when the document reaches this workflow state (e.g. Pending CEO Approval).",
+   "fieldname": "workflow_state",
+   "fieldtype": "Data",
+   "label": "Workflow State"
+  },
+  {
+   "fieldname": "audience_section",
+   "fieldtype": "Section Break",
+   "label": "Who to notify"
+  },
+  {
+   "default": "All Users With Access",
+   "description": "Send to everyone who can access this DocType, or restrict to specific roles.",
+   "fieldname": "notify",
+   "fieldtype": "Select",
+   "label": "Notify",
+   "options": "All Users With Access\nUsers With Specific Roles"
+  },
+  {
+   "depends_on": "eval:doc.notify=='Users With Specific Roles'",
+   "fieldname": "roles",
+   "fieldtype": "Table MultiSelect",
+   "label": "Roles",
+   "options": "Notify Rule Role"
+  },
+  {
+   "fieldname": "content_section",
+   "fieldtype": "Section Break",
+   "label": "Message (optional templates)"
+  },
+  {
+   "description": "Jinja template for the title. Context: doc (the document), user. Defaults to '&lt;DocType&gt; &lt;name&gt;'.",
+   "fieldname": "title_template",
+   "fieldtype": "Data",
+   "label": "Title Template"
+  },
+  {
+   "description": "Jinja template for the body. Defaults to a short summary.",
+   "fieldname": "body_template",
+   "fieldtype": "Small Text",
+   "label": "Body Template"
+  },
+  {
+   "description": "Jinja template for the click-through link. Defaults to the document's form.",
+   "fieldname": "link_template",
+   "fieldtype": "Data",
+   "label": "Link Template"
+  },
+  {
+   "fieldname": "options_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "sound",
+   "fieldtype": "Check",
+   "label": "Play Sound"
+  }
+ ],
+ "links": [],
+ "modified": "2026-08-22 13:07:29.910184",
+ "modified_by": "Administrator",
+ "module": "Notify",
+ "name": "Notify Rule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

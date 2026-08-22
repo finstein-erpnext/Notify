@@ -1,5 +1,5 @@
 [project]
-name = "fin_notification"
+name = "notify"
 authors = [
     { name = "Finstein", email = "ramachandran.mbajan25@srmus.edu.in"}
 ]
@@ -9,6 +9,7 @@ readme = "README.md"
 dynamic = ["version"]
 dependencies = [
     # "frappe~=15.0.0" # Installed and managed by bench.
+    "firebase-admin>=6.5.0",
 ]
 
 [build-system]
