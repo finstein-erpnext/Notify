@@ -15,7 +15,7 @@ your own Firebase project; no external relay, no per-message cost.
 ### Install
 
 ```bash
-bench get-app notify <repo-url>
+bench get-app https://github.com/Finstein-Advizory/Notify.git
 bench --site <site> install-app notify
 ```
 

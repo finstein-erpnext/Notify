@@ -2,8 +2,11 @@ app_name = "notify"
 app_title = "Notify"
 app_publisher = "Finstein"
 app_description = "Outlook-style desktop and mobile push notifications for Frappe/ERPNext bell notifications"
-app_email = "ramachandran.mbajan25@srmus.edu.in"
+app_email = "prabakaran.b@finstein.ai"
 app_license = "mit"
+app_logo_url = "/assets/notify/images/logo.png"
+app_icon = "octicon octicon-bell"
+app_color = "#4C5BD4"
 
 # Apps
 # ------------------
@@ -11,15 +14,14 @@ app_license = "mit"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "notify",
-# 		"logo": "/assets/notify/logo.png",
-# 		"title": "Notify",
-# 		"route": "/notify",
-# 		"has_permission": "notify.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": "notify",
+		"logo": "/assets/notify/images/logo.png",
+		"title": "Notify",
+		"route": "/app/notify-settings",
+	}
+]
 
 # Includes in <head>
 # ------------------

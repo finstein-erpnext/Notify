@@ -1,7 +1,7 @@
 [project]
 name = "notify"
 authors = [
-    { name = "Finstein", email = "ramachandran.mbajan25@srmus.edu.in"}
+    { name = "Finstein", email = "prabakaran.b@finstein.ai"}
 ]
 description = "Outlook-style desktop and mobile push notifications for Frappe/ERPNext bell notifications"
 requires-python = ">=3.10"
