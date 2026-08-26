@@ -67,6 +67,11 @@ local testing).
 All configuration lives in a single doctype: **Notify Settings**. Open the desk Awesome Bar
 and type "Notify Settings".
 
+<p align="center">
+    <img src="docs/images/notify-settings.png" alt="Notify Settings" width="900"><br>
+    <em>Notify Settings — Firebase config, "Push is configured and ready", with a live desktop test pop-up</em>
+</p>
+
 ### Connect your Firebase project
 
 1. Create a free Firebase project at <https://console.firebase.google.com>.
@@ -120,6 +125,11 @@ addition to) mirroring every bell notification.
 2. Fill the fields below and tick **Enabled**.
 3. Click **Save**. Matching events now fire a push composed from your templates.
 
+<p align="center">
+    <img src="docs/images/notify-rule.png" alt="New Notify Rule" width="900"><br>
+    <em>Notify Rule — fan-out on a DocType event, targeted by access or role, with Jinja templates</em>
+</p>
+
 | Field | What to put |
 | --- | --- |
 | Rule Name | A label for the rule (used as the record name) |
@@ -139,6 +149,16 @@ Delivery is captured across two doctypes:
 | --- | --- |
 | Notify Device | Each registered browser/phone — user, platform (Desktop / Mobile / Native), FCM token, user agent, last seen. Toggle **Enabled** to pause a device without deleting it. |
 | Notify Log | Every send attempt — user, status (Queued / Sent / Skipped / Failed), channel (Both / Desktop / Mobile), device count, title/body/link, linked reference document, and any error. |
+
+<p align="center">
+    <img src="docs/images/notify-device.png" alt="Notify Device list" width="900"><br>
+    <em>Notify Device — one row per registered browser/phone, showing platform and status</em>
+</p>
+
+<p align="center">
+    <img src="docs/images/notify-log.png" alt="Notify Log list" width="900"><br>
+    <em>Notify Log — an audit row for every push attempt, filterable by user and status</em>
+</p>
 
 ## Limitations
 
