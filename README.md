@@ -9,7 +9,9 @@ approvals, workflow actions) is delivered to the user's registered desktop brows
 on Frappe HR (HRMS), to their phone's lock screen. All powered by your own Firebase
 project — no external relay, no per-message cost. Built on Frappe & ERPNext.
 
-![Frappe 15](https://img.shields.io/badge/Frappe-15-blue) ![HRMS 15 optional](https://img.shields.io/badge/HRMS-15%20(optional)-lightgrey) ![license MIT](https://img.shields.io/badge/license-MIT-green)
+![Frappe 16](https://img.shields.io/badge/Frappe-16-blue) ![HRMS 16 optional](https://img.shields.io/badge/HRMS-16%20(optional)-lightgrey) ![Python 3.14](https://img.shields.io/badge/Python-3.14-blue) ![license MIT](https://img.shields.io/badge/license-MIT-green)
+
+> **This is the `version-16` branch** — targets Frappe/ERPNext v16 (Python 3.14). For v15, use the `main` branch.
 
 ## Main features
 
@@ -43,7 +45,7 @@ custom sound on the desktop foreground toast, and auto-remove stale device token
 
 ```bash
 cd ~/frappe-bench
-bench get-app https://github.com/finstein-erpnext/Notify.git
+bench get-app --branch version-16 https://github.com/finstein-erpnext/Notify.git
 bench --site <your-site> install-app notify
 bench --site <your-site> migrate
 bench build
@@ -174,12 +176,12 @@ Delivery is captured across two doctypes:
 
 ## Dependencies
 
-- Frappe v15
-- HRMS v15 — optional, required only for mobile / ESS push
+- Frappe v16
+- HRMS v16 — optional, required only for mobile / ESS push
 - `firebase-admin` >= 6.5.0 (installed automatically)
 - A Firebase Cloud Messaging project (free tier is sufficient)
 - Site served over HTTPS
-- Python 3.10+
+- Python 3.14 (as required by Frappe v16)
 
 ## License
 
