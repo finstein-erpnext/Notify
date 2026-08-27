@@ -430,8 +430,12 @@ def _safe_ref_doc(note):
 
 
 def _render(template: str, context: dict) -> str:
+	# nosemgrep: `template` is a Notify Rule field editable only by users with
+	# write access to Notify Rule (System Manager by default), never end-user or
+	# request input. This is the same trust model as Frappe's own Notification /
+	# Email Template Jinja fields.
 	try:
-		return frappe.render_template(template, context)
+		return frappe.render_template(template, context)  # nosemgrep
 	except Exception:
 		return ""
 
