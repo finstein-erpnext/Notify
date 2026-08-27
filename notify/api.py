@@ -66,8 +66,10 @@ def service_worker():
 
 	from werkzeug.wrappers import Response
 
+	# nosemgrep: path is built only from get_app_path() + a hardcoded filename;
+	# no user/request input flows into it, so there is no traversal surface.
 	path = os.path.join(frappe.get_app_path("notify"), "service_worker.js")
-	with open(path, encoding="utf-8") as f:
+	with open(path, encoding="utf-8") as f:  # nosemgrep
 		content = f.read()
 
 	response = Response(content, mimetype="application/javascript")
@@ -106,10 +108,12 @@ def notification_sound():
 			content = None
 
 	if content is None:
+		# nosemgrep: fixed app-owned asset path (get_app_path + hardcoded segments);
+		# no user/request input is used to build it.
 		path = os.path.join(
 			frappe.get_app_path("notify"), "public", "sounds", "notify.wav"
 		)
-		with open(path, "rb") as f:
+		with open(path, "rb") as f:  # nosemgrep
 			content = f.read()
 		mimetype = "audio/wav"
 
@@ -282,4 +286,6 @@ def cleanup_stale_devices():
 	for name in stale:
 		frappe.delete_doc("Notify Device", name, ignore_permissions=True, force=True)
 	if stale:
-		frappe.db.commit()
+		# Scheduler job (no request transaction to piggyback on); commit the
+		# batch delete so pruned devices are persisted.
+		frappe.db.commit()  # nosemgrep
