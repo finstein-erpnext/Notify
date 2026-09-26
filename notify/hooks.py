@@ -272,6 +272,13 @@ doc_events = {
 	"PWA Notification": {
 		"after_insert": "notify.dispatcher.on_pwa_notification",
 	},
+	# Raven chat. Raven has its own push, but it refuses to send from a
+	# developer_mode / localhost site and needs a hosted relay plus its own
+	# device registry; this delivers the same messages over Firebase using the
+	# devices already registered with Notify. Only fires when Raven is installed.
+	"Raven Message": {
+		"after_insert": "notify.dispatcher.on_raven_message",
+	},
 	# Wildcard: powers role/access fan-out rules (Notify Rule). Cheap no-op
 	# for doctypes without a rule (fast cached membership check).
 	"*": {
