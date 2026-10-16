@@ -46,6 +46,9 @@ add_to_apps_screen = [
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
+# Enable / Disable notifications for this browser from the user's own User form
+# (replaces the old top-of-page "Turn on notifications" banner).
+doctype_js = {"User": "public/js/user.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
