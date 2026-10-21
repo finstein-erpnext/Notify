@@ -3,6 +3,7 @@
  * - Loads the Firebase web SDK (compat) on demand.
  * - Registers the root-scope service worker (/notify-sw.js).
  * - Requests notification permission and registers the FCM token with the server.
+ *   Users switch this on/off for their browser from their own User form.
  * - Shows an in-app toast + plays a sound when a message arrives while the tab is focused.
  *
  * Config comes from `frappe.boot.notify` (injected by extend_bootinfo).
@@ -302,8 +303,18 @@ frappe.provide("frappe.notify");
 	async function enable() {
 		// This runs inside a click handler — a valid gesture to unlock audio.
 		unlockAudio();
+		if (!window.isSecureContext) {
+			frappe.msgprint(
+				__("Notifications only work over https or on localhost. Open this site using its https address (or localhost) and try again.")
+			);
+			return;
+		}
 		if (!supported()) {
 			frappe.msgprint(__("This browser does not support desktop notifications."));
+			return;
+		}
+		if (Notification.permission === "denied") {
+			frappe.msgprint(BLOCKED_MSG);
 			return;
 		}
 		const ok = await ensureFirebase();
@@ -313,13 +324,13 @@ frappe.provide("frappe.notify");
 		}
 		const permission = await Notification.requestPermission();
 		if (permission !== "granted") {
-			frappe.show_alert({ message: __("Notifications were blocked."), indicator: "orange" });
+			if (permission === "denied") frappe.msgprint(BLOCKED_MSG);
+			else frappe.show_alert({ message: __("Notifications were blocked."), indicator: "orange" });
 			return;
 		}
 		const token = await registerToken();
 		if (token) {
-			markEnabled(); // remember so the banner never nags again on this browser
-			removeBanner();
+			markEnabled();
 			frappe.show_alert({ message: __("Desktop notifications enabled."), indicator: "green" });
 		} else {
 			frappe.msgprint({
@@ -340,10 +351,15 @@ frappe.provide("frappe.notify");
 		frappe.show_alert({ message: __("Test notification sent."), indicator: "blue" });
 	}
 
-	// ---- Persistent "enable notifications" banner (like camera/mic prompts) ----
-	const BANNER_ID = "notify-banner";
+	// ---- Per-browser enabled / disabled state ---------------------------------
+	// Enabling and disabling is done from the user's own User form (see
+	// public/js/user.js). LS_DISABLED records an explicit opt-out so autoInit
+	// doesn't silently re-register a browser that still has permission granted.
 	const LS_ENABLED = "notify_enabled"; // this browser has enabled before
-	const LS_DISMISSED = "notify_dismissed"; // user closed the banner on purpose
+	const LS_DISABLED = "notify_disabled"; // user turned notifications off here
+	const BLOCKED_MSG = __(
+		"Notifications are blocked for this site. Click the lock/tune icon in the address bar → Site settings → allow Notifications, then reload."
+	);
 
 	function _lsGet(k) {
 		try {
@@ -368,76 +384,45 @@ frappe.provide("frappe.notify");
 	}
 	function markEnabled() {
 		_lsSet(LS_ENABLED);
-		_lsClear(LS_DISMISSED);
+		_lsClear(LS_DISABLED);
 	}
-	function wasEnabled() {
-		return _lsGet(LS_ENABLED);
-	}
-
-	function removeBanner() {
-		const el = document.getElementById(BANNER_ID);
-		if (el) el.remove();
+	function isDisabled() {
+		return _lsGet(LS_DISABLED);
 	}
 
-	function showEnableBanner(permission) {
-		if (document.getElementById(BANNER_ID)) return;
-		// Never nag again once the user has actually ENABLED notifications on this browser.
-		// (Dismissing only hides it for the current page load — it should keep offering
-		// the option until notifications are really turned on.)
-		if (wasEnabled()) return;
+	// True when this browser is currently set up to receive push.
+	function isEnabled() {
+		return supported() && Notification.permission === "granted" && !isDisabled();
+	}
 
-		const bar = document.createElement("div");
-		bar.id = BANNER_ID;
-		bar.setAttribute(
-			"style",
-			"position:fixed;top:0;left:0;right:0;z-index:1031;" +
-				"background:#2490ef;color:#fff;padding:9px 16px;" +
-				"display:flex;align-items:center;justify-content:center;gap:14px;" +
-				"font-size:13px;line-height:1.3;box-shadow:0 1px 6px rgba(0,0,0,.18)"
-		);
-
-		const denied = permission === "denied";
-		const text = document.createElement("span");
-		text.innerHTML = denied
-			? "🔔 " +
-			  __("Notifications are blocked. Click the lock/tune icon in the address bar → Site settings → allow Notifications, then reload.")
-			: "🔔 " + __("Turn on notifications to get desktop alerts and sound for new updates.");
-		bar.appendChild(text);
-
-		if (!denied) {
-			const btn = document.createElement("button");
-			btn.textContent = __("Enable Notifications");
-			btn.setAttribute(
-				"style",
-				"background:#fff;color:#2490ef;border:none;border-radius:6px;" +
-					"padding:5px 14px;font-weight:600;cursor:pointer;white-space:nowrap"
-			);
-			btn.onclick = async () => {
-				await enable();
-				if (Notification.permission === "granted") removeBanner();
-				else if (Notification.permission === "denied") {
-					removeBanner();
-					showEnableBanner("denied");
+	// Public: stop push to this browser. Removes its token on the server and in
+	// Firebase; other devices of the same user keep receiving notifications.
+	async function disable() {
+		_lsSet(LS_DISABLED);
+		_lsClear(LS_ENABLED);
+		try {
+			if (Notification.permission === "granted" && (await ensureFirebase())) {
+				const c = state.cfg || cfg();
+				const token =
+					state.token ||
+					(await state.messaging.getToken({
+						vapidKey: c.vapid_key,
+						serviceWorkerRegistration: state.swReg,
+					}));
+				if (token) {
+					await frappe.call({ method: "notify.api.unregister_device", args: { token } });
+					await state.messaging.deleteToken();
 				}
-			};
-			bar.appendChild(btn);
+			}
+		} catch (e) {
+			console.warn("Notify: disable cleanup failed", e);
 		}
-
-		const close = document.createElement("span");
-		close.textContent = "✕";
-		close.title = __("Dismiss");
-		close.setAttribute("style", "cursor:pointer;opacity:.85;margin-left:6px;font-size:15px");
-		close.onclick = removeBanner; // hide for now; reappears next load until actually enabled
-		bar.appendChild(close);
-
-		document.body.appendChild(bar);
-
-		// nudge the navbar down so the banner doesn't cover it
-		const navbar = document.querySelector(".navbar");
-		if (navbar) navbar.style.top = bar.offsetHeight + "px";
+		state.token = null;
+		frappe.show_alert({ message: __("Desktop notifications disabled."), indicator: "orange" });
 	}
 
-	// Auto-init: register silently if granted, else keep prompting via a top banner.
+	// Auto-init: register silently if permission is granted and the user hasn't
+	// turned notifications off here. Enabling is done from the User form.
 	async function autoInit() {
 		if (!supported()) return;
 		const c = cfg();
@@ -449,27 +434,22 @@ frappe.provide("frappe.notify");
 		// toast + chime fire as soon as pushes start arriving.
 		bindServiceWorkerBridge();
 
-		if (Notification.permission === "granted") {
-			markEnabled(); // permission is live — record it so we never nag again
-			removeBanner();
+		if (Notification.permission === "granted" && !isDisabled()) {
+			markEnabled();
 			try {
 				const ok = await ensureFirebase();
 				if (ok) await registerToken();
 			} catch (e) {
 				console.warn("Notify init failed", e);
 			}
-		} else if (wasEnabled()) {
-			// Enabled before but permission is not currently granted (e.g. revoked in the
-			// browser) -> stay quiet. They can re-enable via frappe.notify.register()
-			// or Notify Settings.
-			removeBanner();
-		} else {
-			// Not enabled yet -> offer the enable banner (shows each load until enabled).
-			showEnableBanner(Notification.permission);
 		}
 	}
 
 	frappe.notify.enable = enable;
+	frappe.notify.disable = disable;
+	frappe.notify.isEnabled = isEnabled;
+	frappe.notify.isSupported = supported;
+	frappe.notify.isReady = () => !!cfg().ready;
 	frappe.notify.sendTest = sendTest;
 	frappe.notify.state = state;
 	// Force (re-)registration of this browser's push token and report the result.
@@ -489,7 +469,6 @@ frappe.provide("frappe.notify");
 		const token = await registerToken();
 		if (token) {
 			markEnabled();
-			removeBanner();
 			frappe.show_alert({ message: __("This browser is registered for push."), indicator: "green" });
 			console.log("Notify token:", token);
 		} else {
@@ -497,14 +476,6 @@ frappe.provide("frappe.notify");
 		}
 		return token;
 	};
-	// Clear the "don't nag" flags and show the enable banner again (e.g. if dismissed by mistake).
-	frappe.notify.resetPrompt = function () {
-		_lsClear(LS_ENABLED);
-		_lsClear(LS_DISMISSED);
-		if (Notification.permission !== "granted") showEnableBanner(Notification.permission);
-		else frappe.show_alert({ message: __("Notifications are already enabled."), indicator: "green" });
-	};
-
 	// --- Debug helpers (run from the browser console) ------------------------
 	// frappe.notify.playSound()  -> play the chime directly (bypasses FCM)
 	// frappe.notify.simulate()   -> fake a foreground message (toast+OS+sound)
